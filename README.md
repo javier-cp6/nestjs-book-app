@@ -12,4 +12,5 @@
 ## Sources
 
 - Nest documentation. https://docs.nestjs.com/
+- Nest and Passport integration (authentication). https://docs.nestjs.com/recipes/passport
 - Manolo Torres. Nest tutorial. https://github.com/ualmtorres/tutorial-nest-js
