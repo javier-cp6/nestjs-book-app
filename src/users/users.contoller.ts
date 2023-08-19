@@ -37,12 +37,4 @@ export class UsersController {
   deleteUser(@Param('userId') userId: string): Promise<User> {
     return this.usersService.deleteUser(userId)
   }
-
-  @Put(':userId')
-  updateUser(
-    @Param('userId') userId: string,
-    @Body() userData: UserDto
-  ): Promise<User> {
-    return this.usersService.updateUser(userId, userData);
-  }
 }

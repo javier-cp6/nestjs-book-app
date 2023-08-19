@@ -2,10 +2,14 @@ import {
   Controller, 
   Post, 
   Request, 
-  UseGuards 
+  UseGuards,
+  Body,
+  BadRequestException,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './local-auth.guard';
+import { ChangePasswordDto } from '../users/user.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -15,5 +19,19 @@ export class AuthController {
   @Post('login')
   async login(@Request() req) {
     return req.user;
+  }
+
+  @Post('changePassword')
+  async changePassword(@Body() userData: ChangePasswordDto): Promise<any> {
+    try {
+      const result = await this.authService.changePassword(userData);
+      if (result) {
+        return { message: 'Password changed successfully' };
+      } else {
+        throw new BadRequestException('Failed to change password');
+      }
+    } catch (error) {
+      throw new InternalServerErrorException('Password change failed');
+    }
   }
 }
