@@ -21,6 +21,10 @@ export class UsersService {
     return await this.usersRepository.findOne({ where: { id: parseInt(userId) }});
   }
 
+  async findOnebyUsername(username: string): Promise<User | undefined> {
+    return await this.usersRepository.findOne({ where: { username }});
+  }
+
   async createUser(newUser: UserDto): Promise<User> {
     const username = newUser.username;
     const password = await bcrypt.hash(newUser.password, saltOrRounds);
@@ -29,10 +33,6 @@ export class UsersService {
 
   async deleteUser(userId: string): Promise<any> {
     return await this.usersRepository.delete({ id: parseInt(userId) });
-  }
-
-  async login(username: string): Promise<User | undefined> {
-    return await this.usersRepository.findOne({ where: { username }});
   }
 
   async changePassword(userData: ChangePasswordDto): Promise<User> {
