@@ -1,4 +1,20 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { 
+  Entity, 
+  Column, 
+  PrimaryGeneratedColumn,
+  OneToMany,
+} from 'typeorm';
+import { Order } from '../orders/order.entity';
+
+enum BookStatus {
+  Available = 'available',
+  OnLoan = 'on loan',
+}
+
+enum BookLanguage {
+  Spanish = 'ES',
+  English = 'EN',
+}
 
 @Entity()
 export class Book {
@@ -25,4 +41,19 @@ export class Book {
 
   @Column()
   image_url: string;
+
+  @Column()
+  publication_year: number;
+
+  @Column()
+  isbn: string;
+
+  @Column({ type: 'enum', enum: BookLanguage })
+  language: BookLanguage;
+
+  @Column({ type: 'enum', enum: BookStatus, default: BookStatus.Available })
+  status: BookStatus;
+
+  @OneToMany(() => Order, order => order.book)
+  orders: Order[];
 }

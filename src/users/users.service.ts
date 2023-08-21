@@ -4,6 +4,8 @@ import { UserDto, ChangePasswordDto } from './user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { Order } from '../orders/order.entity';
+import { OrdersService } from '../orders/orders.service';
 
 const saltOrRounds = 10;
 
@@ -13,12 +15,15 @@ export class UsersService {
     @InjectRepository(User) private usersRepository: Repository<User>,
   ) {}
 
-  async findAll(params): Promise<User[]> { 
+  async findAll(): Promise<User[]> { 
     return await this.usersRepository.find();
   }
 
   async findUser(userId: string): Promise<User | undefined> {
-    return await this.usersRepository.findOne({ where: { id: parseInt(userId) }});
+    return await this.usersRepository.findOne({ 
+      where: { id: parseInt(userId) }, 
+      relations: ['orders']
+    });
   }
 
   async findOnebyUsername(username: string): Promise<User | undefined> {
@@ -44,5 +49,24 @@ export class UsersService {
       return this.usersRepository.save(user)
     }
     return null;
+  }
+}
+
+@Injectable()
+export class UserActionsService {
+  constructor(
+    private ordersService: OrdersService,
+    @InjectRepository(User) private usersRepository: Repository<User>,
+  ) {}
+
+  async findUserOrders(user: any): Promise<Order[]> {
+    return await this.ordersService.findOrdersByUserId(user.userId)
+  }
+
+  async createUserOrder(orderDetails: any, user: any): Promise<Order> {
+    const userId = user.userId;
+    const bookId = orderDetails.bookId;
+    const orderData = { userId, bookId }
+    return await this.ordersService.createOrder(orderData)
   }
 }
