@@ -10,7 +10,7 @@ export class BooksService {
     @InjectRepository(Book) private booksRepository: Repository<Book>, 
   ) {}
   
-  async findAll(params): Promise<Book[]> { 
+  async findAll(): Promise<Book[]> { 
     return await this.booksRepository.find();
   }
 

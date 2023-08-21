@@ -19,7 +19,7 @@ export class BooksController {
 
   @Get()
   findAll(@Req() request: Request): Promise<Book[]> { 
-    return this.booksService.findAll(request.query); 
+    return this.booksService.findAll(); 
   }
 
   @Get(':bookId')
