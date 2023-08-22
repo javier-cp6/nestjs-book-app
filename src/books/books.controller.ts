@@ -9,7 +9,7 @@ import {
   Body,
 } from '@nestjs/common';
 import { BooksService } from './books.service';
-import { BookDto } from './book.dto';
+import { BookDto, UpdateBookDto, UpdateBookStatusDto } from './book.dto';
 import { Book } from './book.entity'; 
 import { Request } from 'express';
 
@@ -40,7 +40,7 @@ export class BooksController {
   @Put(':bookId')
   updateBook(
     @Param('bookId') bookId: string,
-    @Body() bookData: BookDto
+    @Body() bookData: UpdateBookDto | UpdateBookStatusDto
   ): Promise<Book> {
     return this.booksService.updateBook(bookId, bookData);
   }

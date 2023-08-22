@@ -3,6 +3,7 @@ import { Order } from './order.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { OrderDto, UpdateOrderDto } from './order.dto';
+import { BooksService } from 'src/books/books.service';
 
 enum OrderStatus {
   Reserved = 'reserved',
@@ -11,9 +12,16 @@ enum OrderStatus {
   Cancelled = 'cancelled',
 }
 
+enum BookStatus {
+  Available = 'available',
+  Reserved = 'reserved',
+  OnLoan = 'on loan',
+}
+
 @Injectable()
 export class OrdersService {
   constructor(
+    private booksService: BooksService,
     @InjectRepository(Order) private ordersRepository: Repository<Order>,
   ) {}
 
@@ -36,6 +44,10 @@ export class OrdersService {
     const newOrder = this.ordersRepository.create();
     newOrder.user = { id: orderData.userId } as any;
     newOrder.book = { id: orderData.bookId } as any;
+
+    const bookData = { status : BookStatus.Reserved }
+    await this.booksService.updateBook(orderData.bookId, bookData);
+
     return await this.ordersRepository.save(newOrder);
   }
 

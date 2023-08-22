@@ -8,6 +8,7 @@ import { Order } from '../orders/order.entity';
 
 enum BookStatus {
   Available = 'available',
+  Reserved = 'reserved',
   OnLoan = 'on loan',
 }
 
