@@ -70,6 +70,10 @@ export class OrdersService {
     toUpdate.loanDate = currentDate;
     toUpdate.expirationDate = expirationDate;
 
+    const bookId = toUpdate.bookId.toString()
+    const bookData = { status : BookStatus.OnLoan }
+    await this.booksService.updateBook(bookId, bookData);
+
     return this.ordersRepository.save(toUpdate); 
   }
 
@@ -87,6 +91,10 @@ export class OrdersService {
 
     toUpdate.status = OrderStatus.Returned;
     toUpdate.returnDate = currentDate;
+
+    const bookId = toUpdate.bookId.toString()
+    const bookData = { status : BookStatus.Available }
+    await this.booksService.updateBook(bookId, bookData);
 
     return this.ordersRepository.save(toUpdate); 
   }
