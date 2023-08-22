@@ -69,4 +69,16 @@ export class UserActionsService {
     const orderData = { userId, bookId }
     return await this.ordersService.createOrder(orderData)
   }
+
+  async updateUserOrderWithLoan(orderId: string, user: any): Promise<Order> {
+    const userId = user.userId;
+    const orderData = { userId, orderId }
+    return await this.ordersService.upateOrderWithLoan(orderData)
+  }
+
+  async updateUserOrderWithReturn(orderId: string, user: any): Promise<Order> {
+    const userId = user.userId;
+    const orderData = { userId, orderId }
+    return await this.ordersService.upateOrderWithReturn(orderData)
+  }
 }

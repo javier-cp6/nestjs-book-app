@@ -2,6 +2,7 @@ import {
   Controller, 
   Get, 
   Post,
+  Put,
   Delete,
   Param,
   Req,
@@ -56,5 +57,17 @@ export class UserActionsController {
     const postData = request.body;
     const user = request.user;
     return this.userActionsService.createUserOrder(postData, user);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put('orders/:orderId/borrow')
+  updateUserOrderWithLoan(@Req() request: Request, @Param('orderId') orderId: string): Promise<Order> {
+    return this.userActionsService.updateUserOrderWithLoan(orderId, request.user);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put('orders/:orderId/return')
+  updateUserOrderWithReturn(@Req() request: Request, @Param('orderId') orderId: string): Promise<Order> {
+    return this.userActionsService.updateUserOrderWithReturn(orderId, request.user);
   }
 }
