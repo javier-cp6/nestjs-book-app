@@ -5,7 +5,7 @@ import {
   OneToMany, 
 } from 'typeorm';
 import { Order } from '../orders/order.entity';
-import { Role } from 'src/enums/role.enum';
+import { Role } from '../enums/role.enum';
 
 @Entity()
 export class User {

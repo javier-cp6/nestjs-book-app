@@ -5,17 +5,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { Order } from '../orders/order.entity';
-
-enum BookStatus {
-  Available = 'available',
-  Reserved = 'reserved',
-  OnLoan = 'on loan',
-}
-
-enum BookLanguage {
-  Spanish = 'ES',
-  English = 'EN',
-}
+import { BookStatus, BookLanguage } from '../enums/book.enum';
 
 @Entity()
 export class Book {

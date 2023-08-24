@@ -7,13 +7,7 @@ import {
 } from 'typeorm';
 import { Book } from '../books/book.entity';
 import { User } from '../users/user.entity';
-
-enum OrderStatus {
-  Reserved = 'reserved',
-  Borrowed = 'borrowed',
-  Returned = 'returned',
-  Cancelled = 'cancelled',
-}
+import { OrderStatus } from '../enums/order.enum';
 
 @Entity('bookOrder')
 export class Order {
