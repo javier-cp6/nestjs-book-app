@@ -40,6 +40,13 @@ export class UsersService {
     return await this.usersRepository.delete({ id: parseInt(userId) });
   }
 
+  async updateUser(userId: string, userData: any): Promise<any> {
+    const toUpdate = await this.usersRepository.findOne({ where: { id: parseInt(userId) } });
+    const updated = Object.assign(toUpdate, userData);
+
+    return this.usersRepository.save(updated); 
+  }
+
   async changePassword(userData: ChangePasswordDto): Promise<User> {
     const user = await this.usersRepository.findOne({ where: { username: userData.username } });
     const newPasswordHash = await bcrypt.hash(userData.newPassword, saltOrRounds);

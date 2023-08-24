@@ -5,6 +5,7 @@ import {
   OneToMany, 
 } from 'typeorm';
 import { Order } from '../orders/order.entity';
+import { Role } from 'src/enums/role.enum';
 
 @Entity()
 export class User {
@@ -16,6 +17,9 @@ export class User {
 
   @Column('text')
   password: string;
+
+  @Column({ type: 'enum', enum: Role, default: Role.User})
+  role: Role;
 
   @OneToMany(() => Order, order => order.user)
   orders: Order[];

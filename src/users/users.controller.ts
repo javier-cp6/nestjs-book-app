@@ -15,17 +15,24 @@ import { Order } from '../orders/order.entity';
 import { UserDto } from './user.dto';
 import { Request } from 'express';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { Role } from '../enums/role.enum';
+import { Roles } from '../auth/roles.decorator';
+import { RolesGuard } from '../auth/roles.guard';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
   findAll(@Req() request: Request): Promise<User[]> { 
     return this.usersService.findAll(); 
   }
 
   @Get(':userId')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
   findUser(@Param('userId') userId: string): Promise<User> {
     return this.usersService.findUser(userId);
   }
@@ -36,22 +43,33 @@ export class UsersController {
   }
 
   @Delete(':userId')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
   deleteUser(@Param('userId') userId: string): Promise<User> {
     return this.usersService.deleteUser(userId)
+  }
+
+  @Put(':userId')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
+  updateUser(
+    @Param('userId') userId: string,
+    @Body() userData: any
+  ): Promise<User> {
+    return this.usersService.updateUser(userId, userData);
   }
 }
 
 @Controller('user')
+@UseGuards(JwtAuthGuard)
 export class UserActionsController {
   constructor(private readonly userActionsService: UserActionsService) {}
 
-  @UseGuards(JwtAuthGuard)
   @Get('orders')
   findUserOrders(@Req() request: Request): Promise<Order[]> {
     return this.userActionsService.findUserOrders(request.user);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Post('orders')
   createUserOrder(@Req() request: Request): Promise<Order> {
     const postData = request.body;
@@ -59,13 +77,11 @@ export class UserActionsController {
     return this.userActionsService.createUserOrder(postData, user);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Put('orders/:orderId/borrow')
   updateUserOrderWithLoan(@Req() request: Request, @Param('orderId') orderId: string): Promise<Order> {
     return this.userActionsService.updateUserOrderWithLoan(orderId, request.user);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Put('orders/:orderId/return')
   updateUserOrderWithReturn(@Req() request: Request, @Param('orderId') orderId: string): Promise<Order> {
     return this.userActionsService.updateUserOrderWithReturn(orderId, request.user);
