@@ -1,3 +1,5 @@
+import { BookLanguage, BookStatus } from "../enums/book.enum";
+
 export class BookDto {
   readonly title: string;
   readonly genre: string;
@@ -27,15 +29,4 @@ export class UpdateBookDto {
 
 export class UpdateBookStatusDto {
   readonly status: BookStatus;
-}
-
-enum BookStatus {
-  Available = 'available',
-  Reserved = 'reserved',
-  OnLoan = 'on loan',
-}
-
-enum BookLanguage {
-  Spanish = 'ES',
-  English = 'EN',
 }

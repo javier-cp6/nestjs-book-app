@@ -14,9 +14,9 @@ import {
 import { UsersService, UserActionsService } from './users.service';
 import { User } from './user.entity';
 import { Order } from '../orders/order.entity';
-import { ChangePasswordDto, UserDto } from './user.dto';
+import { ChangePasswordDto, UpdateUserDto, UserDto } from './user.dto';
 import { Request } from 'express';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Role } from '../enums/role.enum';
 import { Roles } from '../auth/roles.decorator';
 import { RolesGuard } from '../auth/roles.guard';
@@ -56,7 +56,7 @@ export class UsersController {
   @Roles(Role.Admin)
   updateUser(
     @Param('userId') userId: string,
-    @Body() userData: any
+    @Body() userData: UpdateUserDto
   ): Promise<User> {
     return this.usersService.updateUser(userId, userData);
   }
