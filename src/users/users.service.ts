@@ -46,17 +46,6 @@ export class UsersService {
 
     return this.usersRepository.save(updated); 
   }
-
-  async changePassword(userData: ChangePasswordDto): Promise<User> {
-    const user = await this.usersRepository.findOne({ where: { username: userData.username } });
-    const newPasswordHash = await bcrypt.hash(userData.newPassword, saltOrRounds);
-
-    if (user && await bcrypt.compare(userData.currentPassword, user.password)) {
-      user.password = newPasswordHash
-      return this.usersRepository.save(user)
-    }
-    return null;
-  }
 }
 
 @Injectable()
@@ -65,6 +54,18 @@ export class UserActionsService {
     private ordersService: OrdersService,
     @InjectRepository(User) private usersRepository: Repository<User>,
   ) {}
+
+  async changePassword(user: any, userData: ChangePasswordDto): Promise<User> {
+    console.log(user)
+    const userToUpdate = await this.usersRepository.findOne({ where: { id: parseInt(user.userId) } });
+    const newPasswordHash = await bcrypt.hash(userData.newPassword, saltOrRounds);
+
+    if (userToUpdate && await bcrypt.compare(userData.currentPassword, userToUpdate.password)) {
+      userToUpdate.password = newPasswordHash
+      return this.usersRepository.save(userToUpdate)
+    }
+    return null;
+  }
 
   async findUserOrders(user: any): Promise<Order[]> {
     return await this.ordersService.findOrdersByUserId(user.userId)

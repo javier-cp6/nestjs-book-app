@@ -8,11 +8,13 @@ import {
   Req,
   Body,
   UseGuards,
+  BadRequestException,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { UsersService, UserActionsService } from './users.service';
 import { User } from './user.entity';
 import { Order } from '../orders/order.entity';
-import { UserDto } from './user.dto';
+import { ChangePasswordDto, UserDto } from './user.dto';
 import { Request } from 'express';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { Role } from '../enums/role.enum';
@@ -64,6 +66,20 @@ export class UsersController {
 @UseGuards(JwtAuthGuard)
 export class UserActionsController {
   constructor(private readonly userActionsService: UserActionsService) {}
+
+  @Post('changePassword')
+  async changePassword(@Req() request: Request, @Body() userData: ChangePasswordDto): Promise<any> {
+    try {
+      const result = await this.userActionsService.changePassword(request.user, userData);
+      if (result) {
+        return { message: 'Password changed successfully' };
+      } else {
+        throw new BadRequestException('Failed to change password');
+      }
+    } catch (error) {
+      throw new InternalServerErrorException('Password change failed');
+    }
+  }
 
   @Get('orders')
   findUserOrders(@Req() request: Request): Promise<Order[]> {
