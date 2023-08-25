@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, 
+  BadRequestException, 
+  InternalServerErrorException, 
+  NotFoundException,
+} from '@nestjs/common';
 import { User } from './user.entity';
 import { UserDto, ChangePasswordDto, UpdateUserDto } from './user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -6,12 +10,15 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { Order } from '../orders/order.entity';
 import { OrdersService } from '../orders/orders.service';
+import * as CryptoJS from 'crypto-js';
+import { EmailService } from 'src/utils/email.service';
 
 const saltOrRounds = 10;
 
 @Injectable()
 export class UsersService {
   constructor(
+    private readonly emailService: EmailService,
     @InjectRepository(User) private usersRepository: Repository<User>,
   ) {}
 
@@ -30,10 +37,43 @@ export class UsersService {
     return await this.usersRepository.findOne({ where: { username }});
   }
 
-  async createUser(newUser: UserDto): Promise<User> {
-    const username = newUser.username;
-    const password = await bcrypt.hash(newUser.password, saltOrRounds);
-    return this.usersRepository.save({username, password});
+  async createUser(newUser: UserDto): Promise<any> {
+    try {
+      const username = newUser.username;
+      const password = await bcrypt.hash(newUser.password, saltOrRounds);
+
+      const result = await this.usersRepository.save({username, password});
+
+      const currentDate = new Date();
+
+      const token = CryptoJS.AES.encrypt(
+        JSON.stringify({
+          id: result.id,
+          expirationDate: new Date(
+            currentDate.getFullYear(),
+            currentDate.getMonth(),
+            currentDate.getDate(),
+            currentDate.getHours() + 2
+          ),
+        }),
+        process.env.ENCRYPTION_KEY
+      ).toString();
+
+      await this.emailService.sendEmail(
+        result.username, 
+        "Confirm your email address",
+        `Click the following link to confirm your email address: https://myfrontdotcom?token=${token}`
+      );
+
+      if (result) {
+        return { message: 'User created successfully' };
+      } else {
+        throw new BadRequestException('Failed to create user');
+      }
+      
+    } catch (error) {
+      throw new InternalServerErrorException('User creation failed');
+    }
   }
 
   async deleteUser(userId: string): Promise<any> {
