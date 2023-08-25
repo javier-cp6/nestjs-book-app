@@ -61,7 +61,6 @@ export class UserActionsService {
   ) {}
 
   async changePassword(user: any, userData: ChangePasswordDto): Promise<User> {
-    console.log(user)
     const userToUpdate = await this.usersRepository.findOne({ where: { id: parseInt(user.userId) } });
     const newPasswordHash = await bcrypt.hash(userData.newPassword, saltOrRounds);
 
