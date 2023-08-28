@@ -20,13 +20,16 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Role } from '../enums/role.enum';
 import { Roles } from '../auth/roles.decorator';
 import { RolesGuard } from '../auth/roles.guard';
+import { ApiOperation, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiTags('users') 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @ApiBearerAuth('access-token') 
   @Roles(Role.Admin)
   findAll(@Req() request: Request): Promise<User[]> { 
     return this.usersService.findAll(); 
@@ -34,6 +37,7 @@ export class UsersController {
 
   @Get(':userId')
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @ApiBearerAuth('access-token') 
   @Roles(Role.Admin)
   findUser(@Param('userId') userId: string): Promise<User> {
     return this.usersService.findUser(userId);
@@ -46,6 +50,7 @@ export class UsersController {
 
   @Delete(':userId')
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @ApiBearerAuth('access-token') 
   @Roles(Role.Admin)
   deleteUser(@Param('userId') userId: string): Promise<User> {
     return this.usersService.deleteUser(userId)
@@ -53,6 +58,7 @@ export class UsersController {
 
   @Put(':userId')
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @ApiBearerAuth('access-token') 
   @Roles(Role.Admin)
   updateUser(
     @Param('userId') userId: string,
@@ -62,8 +68,10 @@ export class UsersController {
   }
 }
 
+@ApiTags('user actions') 
 @Controller('user')
 @UseGuards(JwtAuthGuard)
+@ApiBearerAuth('access-token') 
 export class UserActionsController {
   constructor(private readonly userActionsService: UserActionsService) {}
 

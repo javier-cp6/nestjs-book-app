@@ -17,9 +17,12 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Role } from '../enums/role.enum';
 import { Roles } from '../auth/roles.decorator';
+import { ApiOperation, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiTags('books') 
 @Controller('books')
 @UseGuards(JwtAuthGuard, RolesGuard)
+@ApiBearerAuth('access-token') 
 @Roles(Role.Admin)
 export class BooksController {
   constructor(private readonly booksService: BooksService) {}

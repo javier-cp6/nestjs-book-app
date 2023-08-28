@@ -11,9 +11,12 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
 import { Role } from '../enums/role.enum';
+import { ApiOperation, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiTags('orders') 
 @Controller('orders')
 @UseGuards(JwtAuthGuard, RolesGuard)
+@ApiBearerAuth('access-token') 
 @Roles(Role.Admin)
 export class OrdersController {
   constructor (private readonly ordersService: OrdersService) {}
