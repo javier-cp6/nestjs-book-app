@@ -14,3 +14,4 @@
 - Nest documentation. https://docs.nestjs.com/
 - Nest and Passport integration (authentication). https://docs.nestjs.com/recipes/passport
 - Manolo Torres. Nest tutorial. https://github.com/ualmtorres/tutorial-nest-js
+- Verdotte Aututu. Deploying NestJS API on AWS EC2. https://ututuv.medium.com/deploying-nestjs-api-on-aws-ec2-rds-using-ubuntu-server-and-pm2-82f9bb8d996
