@@ -21,6 +21,7 @@ import { Role } from '../enums/role.enum';
 import { Roles } from '../auth/roles.decorator';
 import { RolesGuard } from '../auth/roles.guard';
 import { ApiOperation, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
+import { OrderDto } from 'src/orders/order.dto';
 
 @ApiTags('users') 
 @Controller('users')
@@ -95,7 +96,7 @@ export class UserActionsController {
   }
 
   @Post('orders')
-  createUserOrder(@Req() request: Request): Promise<Order> {
+  createUserOrder(@Body() order:OrderDto, @Req() request: Request): Promise<Order> {
     const postData = request.body;
     const user = request.user;
     return this.userActionsService.createUserOrder(postData, user);
